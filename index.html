@@ -1,0 +1,1085 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector Planshet</title>
+    <link rel="shortcut icon" href="1321457.png" />
+    <div class="template-container">
+    </div>    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-measure/3.1.0/leaflet-measure.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script
+    src="https://cdn.jsdelivr.net/gh/gokertanrisever/leaflet-ruler@master/src/leaflet-ruler.js"
+    integrity="sha384-8SqKZR7V8uOetpjjbcNJHvwuHpb074WS0UXjCLhzfJUqYn3B/uWx1WVv5mwRp1mV"
+    crossorigin="anonymous"
+></script>
+    <style>
+        /* General Map Styles */
+        #map {
+            height: 100vh;
+        }
+
+        html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+/* Modal Background */
+.modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 20, 25, 0.9);
+    z-index: 1000;
+    display: none;
+}
+
+/* Modal Window */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2c2f33;
+    padding: 18px 20px;      /* уменьшил padding */
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 150, 0, 0.3);
+    z-index: 1001;
+    max-width: 320px;        /* уменьшил max-width */
+    width: 90%;              /* чуть уже */
+    border: 2px solid #556b2f;
+    transition: all 0.3s ease;
+}
+
+.modal h2 {
+    font-size: 18px;         /* чуть меньше заголовок */
+    color: #c0c0c0;
+    font-family: 'Consolas', monospace;
+    margin-bottom: 14px;     /* уменьшил отступ */
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;            /* чуть меньше паддинг */
+    font-size: 13px;         /* чуть меньше шрифт */
+    background-color: #1b1e22;
+    color: #a2ff9d;
+    border: 2px solid #556b2f;
+    border-radius: 4px;
+    margin-top: 8px;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+input[type="text"]:focus {
+    border-color: #9acd32;
+    background-color: #222628;
+    outline: none;
+}
+
+.modal-button {
+    width: 100%;
+    padding: 10px;           /* уменьшил высоту кнопок */
+    font-size: 14px;         /* чуть меньше шрифт */
+    margin-top: 14px;        /* меньше отступ сверху */
+    background-color: #556b2f;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-button:hover {
+    background-color: #6b8e23;
+    transform: scale(1.02);
+}
+
+.modal-button:focus {
+    outline: none;
+}
+
+.modal-close {
+    background-color: #8b0000;
+}
+
+.modal-close:hover {
+    background-color: #b22222;
+}
+
+        /* Сдвигаем контейнер вправо для нужных объектов */
+        .shifted-info-container {
+            margin-left: 10px; /* Сдвиг на 20px вправо, можно менять значение */
+        }
+        .shifted-info-containerr {
+            margin-right: 70px;
+        }
+    
+        .red-id {
+            color: rgb(255, 0, 0);
+        }
+        .blue-id {
+            color: #006aff; /* Синий цвет для текста */
+        }
+        
+
+        /* Стили для текста в зависимости от цвета */
+.red-id .label-container,
+.red-id .r-container,
+.red-id .rls-container 
+.red-id .icon-container {
+    color: rgb(255, 0, 0);
+}
+
+.blue-id .label-container,
+.blue-id .r-container,
+.blue-id .rls-container 
+.blue-id .icon-container {
+    color: #006aff; /* Синий цвет для текста */
+}
+        .shifted-id-x-101 {
+            margin-left: 20px;
+       }
+        .shifted-id {
+            margin-left: 15px;
+        }
+        .shifted-id-grumble {
+            margin-left: 25px;
+        }
+        .shifted-id-kinzhal {
+            margin-left: 25px;
+        }
+        .info-container {
+            line-height: 15px;
+        }
+        .label-container {
+            font-size: 12px;
+    font-weight: bold;
+                    font-family: 'Roboto', sans-serif;
+ 
+            -webkit-text-stroke-color: black;
+        }
+        .r-container {
+            font-size: 12px;
+    font-weight: bold;
+            font-family: 'Roboto', sans-serif;
+ 
+        }
+        .rls1-container {
+            font-size: 12px;
+            font-family: 'Roboto', sans-serif;
+ 
+            display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-weight: bold;
+   }
+        .rls-container {
+            font-size: 12px;
+            display: flex;
+            font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    flex-direction: column;
+    justify-content: center;
+   }
+        .label1-container {
+            font-size: 12px;
+            font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+            -webkit-text-stroke-color: black;
+        }
+        .r1-container {
+            font-size: 12px;
+    font-weight: bold;
+            font-family: 'Roboto', sans-serif;
+ 
+        }
+/* Delete Button — Military Style */
+#deleteButton {
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    background-color: #3b4a3f; /* Тёмный армейский зелёный, напоминает покраску техники */
+    color: #ffffff;
+    padding: 16px 28px;
+    font-size: 15px;
+    font-family: 'Courier New', monospace;
+    border-radius: 2px;
+    border: 2px solid #8fbc8f; /* Оливково-зелёная рамка */
+    cursor: pointer;
+    box-shadow: inset 0 0 10px rgba(143, 188, 143, 0.6), 0 0 10px rgba(143, 188, 143, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    z-index: 1003;
+}
+
+#deleteButton:hover {
+    background-color: #556b2f; /* Более светлый зелёный, как «включённая» кнопка */
+    transform: scale(1.03);
+}
+
+#deleteButton:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(143, 188, 143, 0.9), inset 0 0 12px rgba(143, 188, 143, 0.7);
+}
+
+
+#deleteButton:hover {
+    background-color: #7a0000; /* Чуть ярче при наведении */
+    transform: scale(1.03);
+}
+
+#deleteButton:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(255, 70, 0, 0.9), inset 0 0 12px rgba(255, 70, 0, 0.7);
+}
+
+
+#deleteButton:focus {
+    outline: none;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+}
+
+        /* Smooth Transition for Modals */  
+        .modal.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .icon-container {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    font-size: 14px;
+    position: absolute;
+    white-space: nowrap; /* Убираем перенос текста */
+}
+        .icon-container .icon {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Modal Input Background for Target Coordinates */
+        #targetModal {
+            padding: 20px;
+            border-radius: 10px;
+        }
+        #alert-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+        }
+        #alert-menu {
+            background: white;
+            padding: 15px;
+            display: none;
+            border: 2px solid #333;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 200px;
+            font-family: Arial, sans-serif;
+        }
+        #alert-menu h3 {
+            margin: 0 0 10px;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+        }
+        #alert-menu div {
+            margin-bottom: 5px;
+        }
+        #alert-menu input[type=checkbox] {
+            margin-right: 5px;
+        }
+        button#alert-button {
+            background: #ff0800;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 150px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        button#alert-button:hover {
+            background: #c9302c;
+        }
+        #overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('kod.png') center/cover no-repeat;
+    pointer-events: none; /* Позволяет кликам проходить сквозь */
+    z-index: 1000; /* Поверх карты */
+    opacity: 0.1; /* Сделать картинку менее прозрачной */
+    transition: filter 0.3s ease; /* Плавный переход фильтра */
+}
+#topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #2d3240; /* синий */
+    
+    z-index: 1005;
+}
+#sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px; /* Узкая боковая панель */
+    height: 100%; /* На всю высоту экрана */
+    background-color: #2d3240; /* Темный цвет для панели */
+    z-index: 1000; /* Слои, чтобы быть выше карты */
+}
+
+/* Стиль для стрелочки всплывающего окна */
+.leaflet-popup-tip {
+    background-color: #f0f0f0;
+}
+
+/* Стиль для заголовка в окне */
+.leaflet-popup-content h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #555;
+}
+.leaflet-control.ruler {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        left: auto;
+        top: auto;
+      }
+      * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Arial", sans-serif;
+        }
+
+        body {
+            background: #f0f0f0;
+        }
+
+        /* Стили меню */
+        #passwordContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0033cc, #0066ff); /* Градиент синего */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            z-index: 1005;
+        }
+
+        #passwordContainer h1 {
+            font-size: 28px;
+            margin-bottom: 120px;
+            letter-spacing: 1px;
+        }
+
+        #passwordInput {
+            width: 250px;
+            padding: 12px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        #submitButton {
+            padding: 12px 25px;
+            font-size: 18px;
+            background: #ffffff;
+            color: rgb(0, 0, 0);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #submitButton:hover {
+            background: #9d9d9d;
+        }
+        /* Активный режим удаления — например, зеленый или оранжевый */
+#deleteButton.active-delete-mode {
+    background-color: #556b2f; /* Военный оливковый или другой выбранный цвет */
+    border-color: #9acd32;
+    box-shadow: 0 0 15px rgba(154, 205, 50, 0.7);
+}
+
+    </style>
+</head>
+    <div id="map"></div>
+    <div class="overlay"></div>
+    <button id="deleteButton"><i class="fas fa-trash-alt"></i> Удалить объект</button>
+<!-- Модальное окно для отображения координат -->
+<div class="modal" id="coordinatesModal">
+    <h2>Координаты:</h2>
+    <p id="coordinates"></p>
+    <button onclick="closeModal()">Закрыть</button>
+</div>
+<div id="overlay"></div>
+
+
+<!-- Modal Elements -->
+<div class="modal-background" id="modalBackground"></div>
+<div class="modal" id="speedModal">
+    <h2><i class="fas fa-tachometer-alt"></i> Задайте крейсерскую скорость борта (км/ч):</h2>
+    <input type="text" id="speedInput" placeholder="Укажите скорость" />
+    <button class="modal-button" id="speedSubmit"><i class="fas fa-check"></i> Подтвердить</button>
+    <button class="modal-button modal-close" id="speedClose"><i class="fas fa-times"></i> Отмена</button>
+</div>
+
+<div class="modal-background" id="modalBackground"></div>
+<div class="modal" id="targetModal">
+    <h2><i class="fas fa-map-marker-alt"></i> Введите координаты точки (например: 53.9,27.5667):</h2>
+    <input type="text" id="targetInput" placeholder="Введите координаты" />
+    <button class="modal-button" id="targetSubmit"><i class="fas fa-check"></i> Подтвердить</button>
+    <button class="modal-button modal-close" id="targetClose"><i class="fas fa-times"></i> Отмена</button>
+</div>
+
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-measure/3.1.0/leaflet-measure.js"></script>
+    <script src="https://unpkg.com/leaflet-geosearch/dist/bundle.min.js"></script>
+    <script
+    src="https://cdn.jsdelivr.net/gh/gokertanrisever/leaflet-ruler@master/src/leaflet-ruler.js"
+    integrity="sha384-8SqKZR7V8uOetpjjbcNJHvwuHpb074WS0UXjCLhzfJUqYn3B/uWx1WVv5mwRp1mV"
+    crossorigin="anonymous"
+></script>
+    <script>
+        const map = L.map('map', {
+            zoomControl: false
+        }).setView([61.050551362588, 93.4246193441314], 4)
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+        
+        
+// Основной слой карты (OSM)
+const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+});
+
+// Черная OSM-карта (CartoDB Dark Matter)
+const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    attribution: '© <a href="https://carto.com/">CARTO</a>'
+});
+
+// Спутниковая карта с границами (Esri World Imagery with Labels)
+const satelliteLayerWithBorders = L.layerGroup([
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    }),
+    L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        attribution: 'Boundaries and labels © Esri'
+        
+    })
+    
+]);
+var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
+	minZoom: 0,
+	maxZoom: 20,
+	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	ext: 'png'
+});
+
+const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+        
+});
+
+googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+});
+
+googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+});
+var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+	maxZoom: 17,
+	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});
+
+var OPNVKarte = L.tileLayer('https://tileserver.memomaps.de/tilegen/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: 'Map <a href="https://memomaps.de/">memomaps.de</a> <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
+});
+var Stadia_OSMBright = L.tileLayer('https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.{ext}', {
+	minZoom: 0,
+	maxZoom: 20,
+	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	ext: 'png'
+});
+
+// Добавляем стандартную карту по умолчанию
+osmLayer.addTo(map);
+
+// Настройка слоев для переключения
+const baseLayers = {
+    "OSM": osmLayer,
+    "OSM Black": darkLayer,
+    "Satellite": satelliteLayerWithBorders,
+    "Google Maps": googleStreets,
+    "Google Hybrid": googleHybrid,
+    "Google Terrain": googleTerrain,
+    "OpenTopoMap": OpenTopoMap,
+    "OPNVKarte": OPNVKarte,
+    "Ersi": Esri_WorldTopoMap,
+    "Stadia White": Stadia_OSMBright,
+    "Stadia Dark": Stadia_AlidadeSmoothDark
+};
+
+// Добавляем контрол для переключения карт
+L.control.layers(baseLayers).addTo(map);
+
+// Функция для изменения фильтра на изображении
+function updateOverlayFilter() {
+    const overlay = document.querySelector('.overlay');
+    if (map.hasLayer(darkLayer)) {
+        overlay.style.filter = 'invert(1) brightness(2)';
+    } else {
+        overlay.style.filter = 'none';
+    }
+}
+
+// При добавлении или удалении слоя темной карты
+map.on('layeradd', updateOverlayFilter);
+map.on('layerremove', updateOverlayFilter);
+
+// Если карта уже загружена, сразу применим фильтр
+updateOverlayFilter();
+
+        let currentObjectId = 45940;
+        let deleteMode = false;
+        const markers = [];
+
+        function calculateCourse(lat1, lng1, lat2, lng2) {
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const lat1Rad = lat1 * Math.PI / 180;
+            const lat2Rad = lat2 * Math.PI / 180;
+
+            return Math.atan2(
+                Math.sin(dLng) * Math.cos(lat2Rad),
+                Math.cos(lat1Rad) * Math.sin(lat2Rad) - 
+                Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLng)
+            );
+        }
+
+        function calculateNewPosition(lat, lng, speed, time, targetLat, targetLng) {
+            const distance = (speed / 3600) * time;
+            const earthRadius = 6371;
+            const bearing = calculateCourse(lat, lng, targetLat, targetLng);
+
+            const latRadians = (lat * Math.PI) / 180;
+            const lngRadians = (lng * Math.PI) / 180;
+
+            const newLatRadians = Math.asin(
+                Math.sin(latRadians) * Math.cos(distance / earthRadius) + 
+                Math.cos(latRadians) * Math.sin(distance / earthRadius) * Math.cos(bearing)
+            );
+
+            const newLngRadians =
+                lngRadians +
+                Math.atan2(
+                    Math.sin(bearing) * Math.sin(distance / earthRadius) * Math.cos(latRadians),
+                    Math.cos(distance / earthRadius) - Math.sin(latRadians) * Math.sin(newLatRadians)
+                );
+
+            return [
+                (newLatRadians * 180) / Math.PI,
+                (newLngRadians * 180) / Math.PI
+            ];
+        }
+        
+
+        function haversine(lat1, lng1, lat2, lng2) {
+            const R = 6371;
+            const dLat = ((lat2 - lat1) * Math.PI) / 180;
+            const dLng = ((lng2 - lng1) * Math.PI) / 180;
+
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos((lat1 * Math.PI) / 180) *
+                Math.cos((lat2 * Math.PI) / 180) *
+                Math.sin(dLng / 2) * Math.sin(dLng / 2);
+
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function generateId() {
+            return currentObjectId++;
+        }
+
+        // Show modal and handle speed input
+        function showSpeedModal(callback) {
+            const modal = document.getElementById('speedModal');
+            const modalBackground = document.getElementById('modalBackground');
+            const speedInput = document.getElementById('speedInput');
+            const submitButton = document.getElementById('speedSubmit');
+            const closeButton = document.getElementById('speedClose');
+            
+            modal.classList.add('show');
+            modalBackground.style.display = 'none';
+
+            submitButton.onclick = () => {
+                const speed = parseFloat(speedInput.value);
+                if (!isNaN(speed)) {
+                    callback(speed);
+                    closeModal();
+                } else {
+                    alert('Некорректная скорость!');
+                }
+            };
+
+            closeButton.onclick = closeModal;
+
+            function closeModal() {
+                modal.classList.remove('show');
+                modalBackground.style.display = 'none';
+                closeModal = ""
+            }
+
+            modal.classList.add('show');
+            modalBackground.style.display = 'none';
+        }
+
+        // Show modal and handle target input
+        function showTargetModal(callback) {
+            const modal = document.getElementById('targetModal');
+            const modalBackground = document.getElementById('modalBackground');
+            const targetInput = document.getElementById('targetInput');
+            const submitButton = document.getElementById('targetSubmit');
+            const closeButton = document.getElementById('targetClose');
+            
+            modal.classList.add('show');
+            modalBackground.style.display = 'block';
+
+            submitButton.onclick = () => {
+                const [targetLat, targetLng] = targetInput.value.split(',').map(coord => parseFloat(coord));
+                if (!isNaN(targetLat) && !isNaN(targetLng)) {
+                    callback(targetLat, targetLng);
+                    closeModal();
+                } else {
+                    alert('Некорректные координаты цели!');
+                }
+            };
+
+            closeButton.onclick = closeModal;
+
+            function closeModal() {
+                modal.classList.remove('show');
+                modalBackground.style.display = 'none';
+            }
+        }
+
+        map.on('click', (e) => {
+            if (deleteMode) return;
+
+            const { lat, lng } = e.latlng;
+
+            // Get speed input via modal
+            showSpeedModal((speed) => {
+                // Get target input via modal
+                showTargetModal((targetLat, targetLng) => {
+
+            const objectId = generateId();
+            let iconUrl;
+            let iconClass = 'red-id';
+            let shiftedClass = ''
+            let shiftedClasss = ''
+
+            if (speed === 0) {  
+    // Если скорость 0, сразу устанавливаем иконку EPVO
+    iconUrl = 'EPVO.png'; 
+    iconClass = 'blue-id';  
+
+    // Генерируем ID от 500000 и время по Минску
+    const objectId1 = getNextObjectId(); 
+    const kievTime = getKievTime();
+
+    // Меняем iconHtml ПОЛНОСТЬЮ
+    iconHtml = `
+        <div class="icon-container ${iconClass}">
+            <img src="${iconUrl}" class="icon" />
+            <div class="info-container ${shiftedClass} ${shiftedClasss}">
+                <span class="label1-container ${iconClass}">${objectId} ${kievTime}</span>
+                <div class="info-container ${shiftedClass} ${shiftedClasss}">
+                <span class="r1-container ${iconClass}">ЕППО</span>
+                <span class="rls1-container ${iconClass}">${objectId1}</span>
+            </div>
+                        </div>
+        </div>
+    `;
+} else {
+    // Условия для выбора иконки в зависимости от скорости
+    if (speed >= 710 && speed <= 711) {
+        iconUrl = 'Tu-95ms.png';
+    } else if (speed >= 930 && speed <= 931) {
+        iconUrl = 'Tu-22M3.png';
+    } else if (speed >= 2400 && speed <= 2450) {
+        iconUrl = 'mig-31.png';
+    } else if (speed >= 800 && speed <= 801) {
+        iconUrl = 'a-50.png';
+    } else if (speed >= 960 && speed <= 961) {
+        iconUrl = 'tu-160.png';
+    } else if (speed >= 760 && speed <= 761) {
+        iconUrl = 'il-76md.png';
+    } else if (speed >= 775 && speed <= 776) {
+        iconUrl = 'il-78.png';
+    } else if (speed >= 750 && speed <= 751) {
+        iconUrl = 'tu-134.png';
+    } else if (speed >= 440 && speed <= 441) {
+        iconUrl = 'an-26.png';
+    } else if (speed >= 570 && speed <= 571) {
+        iconUrl = 'an-12.png';
+    } else if (speed >= 820 && speed <= 821) {
+        iconUrl = 'an-124.png';
+    } else if (speed >= 485 && speed <= 486) {
+        iconUrl = 'il-22.png';
+    } else {
+        // Если скорость не попала ни в одно условие, ставим "neyst tip.png"
+        iconUrl = 'neyst tip.png';
+    }
+const translations = {
+    "Tu-95ms": "Ту-95МС",
+    "a-50": "А-50",    
+    "Tu-22M3": "Ту-22М3",
+    "mig-31": "МиГ-31И",
+    "neyst tip": "Неизвестный тип"
+};
+
+let objectKey = iconUrl.replace('.png', '');
+let objectType = translations[objectKey] || objectKey;
+
+iconHtml = `
+    <div class="icon-container ${iconClass}">
+        <img src="${iconUrl}" class="icon" />
+        <div class="info-container ${shiftedClass} ${shiftedClasss}">
+            <span class="label-container ${iconClass}"></span>
+            <span class="r-container ${iconClass}"></span>
+        </div>
+    </div>
+`;
+
+}
+
+
+                    const icon = L.divIcon({
+                        className: 'icon',
+                        html: iconHtml,
+                        iconSize: [30, 30],
+                        iconAnchor: [20, 20],
+                    });
+
+                    const marker = L.marker([lat, lng], { icon }).addTo(map);
+                    
+
+// Сопоставление английских названий с русскими
+const translations = {
+    "Tu-95ms": "Ту-95МС",
+    "A-50": "А-50",    
+    "Tu-22M3": "Ту-22М3",
+    "mig-31": "МиГ-31И",
+    "neyst tip": "Неизвестный тип"
+};
+
+// Получаем название объекта без ".png"
+let objectKey = iconUrl.replace('.png', '').replace(/-/g, ' ');
+
+// Переводим название, если оно есть в словаре, иначе оставляем как есть
+let objectType = translations[objectKey] || objectKey;
+
+// Приводим к нормальному регистру (каждое слово с большой буквы)
+objectType = objectType.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+// Формируем содержимое popup
+const customPopupContent = `
+    <div class="custom-popup">
+        <p><strong>ЦЕЛЬ (2111):</strong> ${objectType}</p>
+        <p><strong>СКОРОСТЬ (2818):</strong> ${speed} КМ/Ч</p>
+    </div>
+`;
+
+// Привязываем кастомизированное всплывающее окно
+marker.bindPopup(customPopupContent);
+
+// Слушаем клик для открытия окна
+marker.on('click', function() {
+    marker.openPopup();
+});
+
+
+
+
+                    // marker.objectId = objectId;
+markers.push(marker);
+
+// Проверяем, если скорость больше 0, то поворачиваем иконку
+if (speed > 0) {
+    const course = calculateCourse(lat, lng, targetLat, targetLng) * (180 / Math.PI);
+    const angle = (course + 360) % 360;
+    marker._icon.querySelector('.icon').style.transform = `rotate(${angle}deg)`;
+} else {
+    // Если скорость 0, не вращаем иконку (сбрасываем поворот)
+    marker._icon.querySelector('.icon').style.transform = `rotate(0deg)`;
+}
+
+let startTime = null;
+
+
+function updatePosition(timestamp) {                                                                                    
+    if (!startTime) startTime = timestamp;
+    const elapsedTime = (timestamp - startTime) / 1000; // время в секундах
+
+    const [newLat, newLng] = calculateNewPosition(lat, lng, speed, elapsedTime, targetLat, targetLng);
+    marker.setLatLng([newLat, newLng]);
+
+    if (haversine(newLat, newLng, targetLat, targetLng) > 1) {
+        requestAnimationFrame(updatePosition);
+    } else {
+        marker.remove(); // Удалить маркер, если цель достигнута
+    }
+}
+
+requestAnimationFrame(updatePosition);
+
+
+marker.on('click', function () {
+    if (deleteMode) {
+        if (confirm('Подтвердите удаление объекта')) {
+            // Удаляем маркер
+            marker.remove();
+
+            // Выходим из режима удаления
+            deleteMode = false;
+
+            const deleteButton = document.getElementById('deleteButton');
+            deleteButton.classList.remove('active-delete-mode'); // снимаем активный класс
+            deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Удалить объект';
+        }
+    }
+});
+
+                });
+            });
+        });
+document.getElementById('deleteButton').onclick = function () {
+    deleteMode = !deleteMode;
+
+    if (deleteMode) {
+        this.classList.add('active-delete-mode');
+        this.innerHTML = '<i class="fas fa-check"></i> Выход из режима удаления';
+    } else {
+        this.classList.remove('active-delete-mode');
+        this.innerHTML = '<i class="fas fa-trash-alt"></i> Удалить объект';
+    }
+};
+
+
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = '';
+        });
+// РЛС для объектов
+const rlsOptions = [
+    "79К6",
+    "35Д6М",
+    "Малахіт",
+    "Малахіт", // Увеличиваем вероятность "Малахіт"
+    "Малахіт"
+];
+
+// Функция для выбора РЛС
+function getRlsForObject(objectId, iconUrl) {
+    // Для всех объектов (включая спецобъекты) выбираем случайную РЛС
+    const randomIndex = Math.floor(Math.random() * rlsOptions.length);
+    return rlsOptions[randomIndex];
+}
+
+let touchTimer;
+
+map.on('contextmenu', function (e) {
+    const coords = `${e.latlng.lat}, ${e.latlng.lng}`;
+    navigator.clipboard.writeText(coords).then(() => {
+        alert(`Координаты скопированы: ${coords}`);
+    }).catch(err => {
+        console.error('Ошибка копирования координат:', err);
+    });
+});
+
+map.on('touchstart', function (e) {
+    // Запускаем таймер, чтобы определить долгий клик
+    touchTimer = setTimeout(() => {
+        const latlng = e.latlng;
+        const coords = `${latlng.lat}, ${latlng.lng}`;
+
+        navigator.clipboard.writeText(coords).then(() => {
+            alert(`Координаты скопированы: ${coords}`);
+        }).catch(err => {
+            console.error('Ошибка копирования координат:', err);
+        });
+    }, 800); // Время задержки в миллисекундах (800 мс = долгий клик)
+
+});
+
+map.on('touchend', function (e) {
+    // Если палец поднят до завершения задержки, отменяем таймер
+    clearTimeout(touchTimer);
+});
+
+fetch("front.json")
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data, {
+      style: function(feature) {
+        let color = '#bdbdbd'; // По умолчанию цвет "неизвестно"
+        let opacity = 1; // По умолчанию непрозрачность для "неизвестно"
+        let fillOpacity = 1; // По умолчанию заливка непрозрачная
+
+        if (feature.properties.name === 'Багатокутник 4') {
+          color = '#000000'
+          opacity = 1; // Прозрачность границы
+          fillOpacity = 0.0; // Прозрачность заливки
+        }
+
+        // Возвращаем стиль с прозрачностью
+        return {
+          color: color,
+          weight: 2,
+          opacity: opacity,
+          fillColor: color,
+          fillOpacity: fillOpacity
+        };
+      }
+    }).addTo(map);
+  })
+  .catch(error => console.error("Ошибка загрузки JSON:", error));
+
+  let polygons = {};
+let menuVisible = false;
+
+fetch('trevoga.json')
+    .then(response => response.json())
+    .then(geojsonData => {
+        let regions = {};
+        geojsonData.features.forEach(feature => {
+            let name = feature.properties.name;
+            regions[name] = feature;
+        });
+
+        // Автоматически активируем "Луганская область" и "А. Р Крым"
+        const autoActivateRegions = ["Луганская область", "А.Р Крым"];
+        
+        document.querySelectorAll('#alert-menu input[type=checkbox]').forEach(checkbox => {
+            checkbox.onchange = function() {
+                let region = checkbox.id;
+                if (checkbox.checked && regions[region]) {
+                    let layer = L.geoJSON(regions[region], {
+                        style: { color: 'red', fillColor: 'red', fillOpacity: 0.1, weight: 0.6 }
+                    }).addTo(map);
+                    polygons[region] = layer;
+                } else if (polygons[region]) {
+                    map.removeLayer(polygons[region]);
+                    delete polygons[region];
+                }
+            };
+
+            // Автоматически ставим галочку для нужных регионов и активируем их
+            if (autoActivateRegions.includes(checkbox.id)) {
+                checkbox.checked = true;
+                checkbox.onchange();  // Вызываем onchange вручную для активированного региона
+            }
+        });
+    });
+
+document.getElementById('alert-button').onclick = function() {
+    menuVisible = !menuVisible;
+    document.getElementById('alert-menu').style.display = menuVisible ? 'block' : 'none';
+};
+        function getKievTime() {
+    const options = {
+        timeZone: 'Europe/Kiev',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false // 24-часовой формат
+    };
+    return new Intl.DateTimeFormat('ru-RU', options).format(new Date());
+}
+
+let objectIdCounter = 564100;
+
+function getNextObjectId() {
+    return objectIdCounter++;
+
+
+    const iconHTML = `
+        <div class="icon-container ${iconClass}">
+            <img src="${iconUrl}" class="icon" />
+            <div class="info-container ${shiftedClass}">
+                <span class="label-container ${iconClass}">${objectId} ${minskTime}</span>
+                <span class="r-container ${iconClass}">ЕПВО</span>
+            </div>
+        </div>
+    `;
+    return iconHTML;
+}
+
+    </script>
+</body>
+</html>
