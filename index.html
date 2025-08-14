@@ -839,64 +839,108 @@ const translations = {
     "neyst tip": "Неизвестный тип"
 };
 
-// Получаем название объекта без ".png"
+// Получаем название объекта
 let objectKey = iconUrl.replace('.png', '').replace(/-/g, ' ');
-
-// Переводим название, если оно есть в словаре, иначе оставляем как есть
 let objectType = translations[objectKey] || objectKey;
-
-// Приводим к нормальному регистру (каждое слово с большой буквы)
 objectType = objectType.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
-// Формируем содержимое popup
+// Инициализация переменных
+let currentLat = lat;
+let currentLng = lng;
+let targetLatVar = targetLat;
+let targetLngVar = targetLng;
+let startTime = null;
+let isActive = true;
+
+// Popup контент
 const customPopupContent = `
     <div class="custom-popup">
         <p><strong>ЦЕЛЬ (2111):</strong> ${objectType}</p>
         <p><strong>СКОРОСТЬ (2818):</strong> ${speed} КМ/Ч</p>
+        <button id="changeCoordsBtn">Изменить координаты</button>
     </div>
 `;
 
-// Привязываем кастомизированное всплывающее окно
 marker.bindPopup(customPopupContent);
 
-// Слушаем клик для открытия окна
-marker.on('click', function() {
-    marker.openPopup();
+// Обработчик открытия popup
+marker.on('popupopen', () => {
+    setTimeout(() => { // Чтобы HTML точно появился в DOM
+        const popupEl = marker.getPopup().getElement();
+        if (!popupEl) return;
+
+        const btn = popupEl.querySelector('#changeCoordsBtn');
+        if (!btn) return;
+
+        btn.onclick = () => {
+            const newCoords = prompt("Введите новые координаты (lat,lng):");
+            if (!newCoords) return;
+
+            const [newLat, newLng] = newCoords.split(',').map(Number);
+            if (isNaN(newLat) || isNaN(newLng)) {
+                alert("Некорректные координаты");
+                return;
+            }
+
+            const pos = marker.getLatLng();
+            currentLat = pos.lat;
+            currentLng = pos.lng;
+
+            targetLatVar = newLat;
+            targetLngVar = newLng;
+
+            startTime = null;
+
+            if (!isActive) {
+                isActive = true;
+                requestAnimationFrame(updatePosition);
+            }
+        };
+    }, 0);
 });
 
+// Клик по маркеру для открытия popup
+marker.on('click', () => marker.openPopup());
 
-
-
-                    // marker.objectId = objectId;
-markers.push(marker);
-
-// Проверяем, если скорость больше 0, то поворачиваем иконку
-if (speed > 0) {
-    const course = calculateCourse(lat, lng, targetLat, targetLng) * (180 / Math.PI);
+// Поворот иконки
+function rotateIcon(lat1, lng1, lat2, lng2, speed) {
+    if (speed === 0) {
+        marker._icon.querySelector('.icon').style.transform = `rotate(0deg)`; // не вертим
+        return;
+    }
+    const course = calculateCourse(lat1, lng1, lat2, lng2) * (180 / Math.PI);
     const angle = (course + 360) % 360;
     marker._icon.querySelector('.icon').style.transform = `rotate(${angle}deg)`;
-} else {
-    // Если скорость 0, не вращаем иконку (сбрасываем поворот)
-    marker._icon.querySelector('.icon').style.transform = `rotate(0deg)`;
 }
 
-let startTime = null;
+
+rotateIcon(lat, lng, targetLat, targetLng, speed);
 
 
-function updatePosition(timestamp) {                                                                                    
+// Добавляем маркер в массив
+markers.push(marker);
+
+// Анимация движения
+function updatePosition(timestamp) {
     if (!startTime) startTime = timestamp;
-    const elapsedTime = (timestamp - startTime) / 1000; // время в секундах
+    const elapsedTime = (timestamp - startTime) / 1000;
 
-    const [newLat, newLng] = calculateNewPosition(lat, lng, speed, elapsedTime, targetLat, targetLng);
+    const [newLat, newLng] = calculateNewPosition(
+        currentLat, currentLng, speed, elapsedTime, targetLatVar, targetLngVar
+    );
+
     marker.setLatLng([newLat, newLng]);
+    rotateIcon(newLat, newLng, targetLatVar, targetLngVar, speed);
 
-    if (haversine(newLat, newLng, targetLat, targetLng) > 1) {
+    if (haversine(newLat, newLng, targetLatVar, targetLngVar) > 0.1 && isActive) {
         requestAnimationFrame(updatePosition);
     } else {
-        marker.remove(); // Удалить маркер, если цель достигнута
+        isActive = false;
+        marker.remove();
     }
 }
 
+// Старт анимации
 requestAnimationFrame(updatePosition);
 
 
