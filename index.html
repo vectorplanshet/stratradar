@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vector Planshet</title>
+    <title>Планшет ЗРВ</title>
     <link rel="shortcut icon" href="1321457.png" />
     <div class="template-container">
     </div>    
@@ -12,9 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-measure/3.1.0/leaflet-measure.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href = "fonts/segoe ui/stylesheet.css" rel = "stylesheet" type = "text/css" />
     <script
     src="https://cdn.jsdelivr.net/gh/gokertanrisever/leaflet-ruler@master/src/leaflet-ruler.js"
     integrity="sha384-8SqKZR7V8uOetpjjbcNJHvwuHpb074WS0UXjCLhzfJUqYn3B/uWx1WVv5mwRp1mV"
@@ -33,112 +31,121 @@
     height: 100%;
 }
 
-#map {
-    height: 100%;
+  #map {
+    position: absolute;
+    top: calc(100vw / (2560 / 70));
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+ #toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-}
-/* Modal Background */
-.modal-background {
+    aspect-ratio: 2560 / 70;
+    background: url('toolbar.png') no-repeat center center;
+    background-size: contain;
+    z-index: 1000;
+  }
+  #map {
+    position: absolute;
+    top: calc(100vw / (2560 / 70));
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+        /* Modal Background */
+        .modal-background {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(15, 20, 25, 0.9);
+    background-color: rgba(21, 24, 30, 0.85);
     z-index: 1000;
     display: none;
+    backdrop-filter: blur(4px);
 }
 
-/* Modal Window */
 .modal {
     display: none;
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    background: #2c2f33;
-    padding: 18px 20px;      /* уменьшил padding */
-    border-radius: 4px;
-    box-shadow: 0 0 10px rgba(0, 150, 0, 0.3);
+    transform: translate(-50%, -50%) scale(0.95);
+    background: #252b36;
+    padding: 20px 24px;
+    border-radius: 14px;
     z-index: 1001;
-    max-width: 320px;        /* уменьшил max-width */
-    width: 90%;              /* чуть уже */
-    border: 2px solid #556b2f;
-    transition: all 0.3s ease;
+    max-width: 360px;
+    width: 90%;
+    transition: all 0.35s ease;
+    color: #f0f0f0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.modal.show {
+    display: block;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .modal h2 {
-    font-size: 18px;         /* чуть меньше заголовок */
-    color: #c0c0c0;
-    font-family: 'Consolas', monospace;
-    margin-bottom: 14px;     /* уменьшил отступ */
+    font-size: 22px;
+    color: #ffffff;
+    margin-bottom: 16px;
     text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
-
 input[type="text"] {
     width: 100%;
-    padding: 8px;            /* чуть меньше паддинг */
-    font-size: 13px;         /* чуть меньше шрифт */
-    background-color: #1b1e22;
-    color: #a2ff9d;
-    border: 2px solid #556b2f;
-    border-radius: 4px;
-    margin-top: 8px;
-    transition: border-color 0.3s, background-color 0.3s;
+    padding: 8px 10px;
+    font-size: 14px;
+    background-color: #1e232c;
+    color: #ffffff;
+    border-radius: 8px;
+    border: 2px solid #3a4152;
 }
 
 input[type="text"]:focus {
-    border-color: #9acd32;
-    background-color: #222628;
+    border-color: #4a90e2;
+    background-color: #252b36;
     outline: none;
 }
 
 .modal-button {
     width: 100%;
-    padding: 10px;           /* уменьшил высоту кнопок */
-    font-size: 14px;         /* чуть меньше шрифт */
-    margin-top: 14px;        /* меньше отступ сверху */
-    background-color: #556b2f;
-    color: #ffffff;
+    padding: 12px;
+    font-size: 15px;
+    margin-top: 20px;
+    background-color: #4674dc;
+    color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .modal-button:hover {
-    background-color: #6b8e23;
-    transform: scale(1.02);
+    background-color: #5c90de;
 }
 
 .modal-button:focus {
     outline: none;
 }
-
-.modal-close {
-    background-color: #8b0000;
-}
-
-.modal-close:hover {
-    background-color: #b22222;
-}
-
         /* Сдвигаем контейнер вправо для нужных объектов */
         .shifted-info-container {
-            margin-left: 10px; /* Сдвиг на 20px вправо, можно менять значение */
+           width: 30px;
+           height: 30px;
         }
-        .shifted-info-containerr {
+        .icon-container .shifted-info-containerr {
             margin-right: 70px;
         }
     
         .red-id {
-            color: rgb(255, 0, 0);
+            color: #F7040A;
         }
         .blue-id {
-            color: #006aff; /* Синий цвет для текста */
+            color: #0400ff;
         }
         
 
@@ -147,16 +154,16 @@ input[type="text"]:focus {
 .red-id .r-container,
 .red-id .rls-container 
 .red-id .icon-container {
-    color: rgb(255, 0, 0);
+    color: #F7040A;
 }
 
 .blue-id .label-container,
 .blue-id .r-container,
 .blue-id .rls-container 
 .blue-id .icon-container {
-    color: #006aff; /* Синий цвет для текста */
+    color: #0400ff; /* Синий цвет для текста */
 }
-        .shifted-id-x-101 {
+        .shifted-id-x-101 { 
             margin-left: 20px;
        }
         .shifted-id {
@@ -168,98 +175,71 @@ input[type="text"]:focus {
         .shifted-id-kinzhal {
             margin-left: 25px;
         }
-        .info-container {
-            line-height: 15px;
-        }
         .label-container {
-            font-size: 12px;
-    font-weight: bold;
-                    font-family: 'Roboto', sans-serif;
- 
+            font-size: 14.3px;
+
             -webkit-text-stroke-color: black;
         }
         .r-container {
-            font-size: 12px;
-    font-weight: bold;
-            font-family: 'Roboto', sans-serif;
+            font-size: 14.3px; 
+
  
         }
         .rls1-container {
-            font-size: 12px;
-            font-family: 'Roboto', sans-serif;
- 
+            font-size: 14.3px;
+
             display: flex;
     flex-direction: column;
-    justify-content: center;
-    font-weight: bold;
    }
         .rls-container {
-            font-size: 12px;
+            font-size: 14.3px;
             display: flex;
-            font-family: 'Roboto', sans-serif;
-    font-weight: bold;
     flex-direction: column;
     justify-content: center;
    }
+   .info-container {
+            line-height: 13.3px;
+            margin-top: 8px;
+      
+        }
+        .info1-container {
+            line-height: 14.3px;
+            margin-top: 1px;
+        }
         .label1-container {
-            font-size: 12px;
-            font-family: 'Roboto', sans-serif;
-    font-weight: bold;
+            font-size: 14px;
             -webkit-text-stroke-color: black;
+            white-space: nowrap;
+
+            color: black;
         }
         .r1-container {
-            font-size: 12px;
-    font-weight: bold;
-            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+                        font-weight: 600;
+font-family: 'Segoe UI', sans-serif;
  
         }
-/* Delete Button — Military Style */
-#deleteButton {
+        .c-container {
+            white-space: nowrap;
+        }
+        /* Delete Button */
+        #deleteButton {
     position: absolute;
     bottom: 30px;
     left: 10px;
-    background-color: #3b4a3f; /* Тёмный армейский зелёный, напоминает покраску техники */
-    color: #ffffff;
-    padding: 16px 28px;
-    font-size: 15px;
-    font-family: 'Courier New', monospace;
-    border-radius: 2px;
-    border: 2px solid #8fbc8f; /* Оливково-зелёная рамка */
+    background: transparent;
+    color: rgb(255, 0, 0);
+    padding: 15px 25px;
+    font-size: 18px;
+    border-radius: 8px;
     cursor: pointer;
-    box-shadow: inset 0 0 10px rgba(143, 188, 143, 0.6), 0 0 10px rgba(143, 188, 143, 0.4);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: none;
+    box-shadow: none;
+    transition: all 0.3s ease;
     z-index: 1003;
+    text-align: left;
+    padding-left: 7px;
 }
-
-#deleteButton:hover {
-    background-color: #556b2f; /* Более светлый зелёный, как «включённая» кнопка */
-    transform: scale(1.03);
-}
-
-#deleteButton:focus {
-    outline: none;
-    box-shadow: 0 0 20px rgba(143, 188, 143, 0.9), inset 0 0 12px rgba(143, 188, 143, 0.7);
-}
-
-
-#deleteButton:hover {
-    background-color: #7a0000; /* Чуть ярче при наведении */
-    transform: scale(1.03);
-}
-
-#deleteButton:focus {
-    outline: none;
-    box-shadow: 0 0 20px rgba(255, 70, 0, 0.9), inset 0 0 12px rgba(255, 70, 0, 0.7);
-}
-
-
-#deleteButton:focus {
-    outline: none;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
-}
-
         /* Smooth Transition for Modals */  
         .modal.show {
             display: block;
@@ -276,17 +256,18 @@ input[type="text"]:focus {
         .icon-container {
     display: flex;
     align-items: center;
-    gap: 13px;
+    gap: 7px;
     font-size: 14px;
     position: absolute;
-    white-space: nowrap; /* Убираем перенос текста */
-}
-        .icon-container .icon {
-            width: 30px;
-            height: 30px;
+}       
+ .icon-container .icon {
+            width: 27px;
+            height: 27px;
             object-fit: cover;
             display: block;
+            margin-bottom: 30px;  
         }
+
 
         /* Modal Input Background for Target Coordinates */
         #targetModal {
@@ -322,18 +303,16 @@ input[type="text"]:focus {
             margin-right: 5px;
         }
         button#alert-button {
-            background: #ff0800;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            width: 150px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        button#alert-button:hover {
-            background: #c9302c;
-        }
+    background: transparent;
+    color: rgb(255, 0, 0);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 150px;
+    border-radius: 5px;
+    text-align: left; /* Текст слева */
+    padding-left: 7px;
+}
         #overlay {
     position: absolute;
     top: 0;
@@ -346,24 +325,14 @@ input[type="text"]:focus {
     opacity: 0.1; /* Сделать картинку менее прозрачной */
     transition: filter 0.3s ease; /* Плавный переход фильтра */
 }
-#topbar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background-color: #2d3240; /* синий */
-    
-    z-index: 1005;
-}
-#sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 50px; /* Узкая боковая панель */
-    height: 100%; /* На всю высоту экрана */
-    background-color: #2d3240; /* Темный цвет для панели */
-    z-index: 1000; /* Слои, чтобы быть выше карты */
+/* Кастомизация всплывающего окна */
+.leaflet-popup-content {
+    background-color: #f0f0f0; /* Светлый фон */
+    color: #333;               /* Темный цвет текста */
+    padding: 10px;
+    border-radius: 10px;       /* Скругленные углы */
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
 }
 
 /* Стиль для стрелочки всплывающего окна */
@@ -432,7 +401,7 @@ input[type="text"]:focus {
         #submitButton {
             padding: 12px 25px;
             font-size: 18px;
-            background: #ffffff;
+            background: #ff0000;
             color: rgb(0, 0, 0);
             border: none;
             border-radius: 5px;
@@ -443,18 +412,21 @@ input[type="text"]:focus {
         #submitButton:hover {
             background: #9d9d9d;
         }
-        /* Активный режим удаления — например, зеленый или оранжевый */
-#deleteButton.active-delete-mode {
-    background-color: #556b2f; /* Военный оливковый или другой выбранный цвет */
-    border-color: #9acd32;
-    box-shadow: 0 0 15px rgba(154, 205, 50, 0.7);
+    .icon-container .icon.su34-icon {
+    width: 35px;
+    height: 35px;
+}
+.leaflet-control-layers {
+  opacity: 0;
 }
 
     </style>
 </head>
+<body>
+      <div id="toolbar"></div>
     <div id="map"></div>
     <div class="overlay"></div>
-    <button id="deleteButton"><i class="fas fa-trash-alt"></i> Удалить объект</button>
+    <button id="deleteButton"><i class="fas fa-trash-alt"></i></button>
 <!-- Модальное окно для отображения координат -->
 <div class="modal" id="coordinatesModal">
     <h2>Координаты:</h2>
@@ -464,22 +436,107 @@ input[type="text"]:focus {
 <div id="overlay"></div>
 
 
-<!-- Modal Elements -->
-<div class="modal-background" id="modalBackground"></div>
-<div class="modal" id="speedModal">
-    <h2><i class="fas fa-tachometer-alt"></i> Задайте крейсерскую скорость борта (км/ч):</h2>
-    <input type="text" id="speedInput" placeholder="Укажите скорость" />
-    <button class="modal-button" id="speedSubmit"><i class="fas fa-check"></i> Подтвердить</button>
-    <button class="modal-button modal-close" id="speedClose"><i class="fas fa-times"></i> Отмена</button>
-</div>
-
-<div class="modal-background" id="modalBackground"></div>
-<div class="modal" id="targetModal">
-    <h2><i class="fas fa-map-marker-alt"></i> Введите координаты точки (например: 53.9,27.5667):</h2>
-    <input type="text" id="targetInput" placeholder="Введите координаты" />
-    <button class="modal-button" id="targetSubmit"><i class="fas fa-check"></i> Подтвердить</button>
-    <button class="modal-button modal-close" id="targetClose"><i class="fas fa-times"></i> Отмена</button>
-</div>
+    <!-- Modal Elements -->
+    <div class="modal-background" id="modalBackground"></div>
+    <div class="modal" id="speedModal">
+        <h2><i class="fas fa-tachometer-alt"></i> Введите скорость объекта (км/ч):</h2>
+        <input type="text" id="speedInput" placeholder="Введите скорость" />
+        <button class="modal-button" id="speedSubmit"><i class="fas fa-check"></i> Подтвердить</button>
+        <button class="modal-button modal-close" id="speedClose"><i class="fas fa-times"></i> Закрыть</button>
+    </div>
+    <div class="modal-background" id="modalBackground"></div>
+    <div class="modal" id="targetModal">
+        <h2><i class="fas fa-map-marker-alt"></i> Введите цель (Координаты, например: 53.9,27.5667):</h2>
+        <input type="text" id="targetInput" placeholder="Введите координаты" />
+        <button class="modal-button" id="targetSubmit"><i class="fas fa-check"></i> Подтвердить</button>
+        <button class="modal-button modal-close" id="targetClose"><i class="fas fa-times"></i> Закрыть</button>
+    </div>
+    
+    <div id="alert-container">
+        <button id="alert-button"><i class="fas fa-bell"></i></button>
+        <div id="alert-menu">
+            <h3>Дать тревогу</h3>
+            <div>
+                <input type="checkbox" id="Сумская область"><label for="Сумская область">Сумская область</label>
+            </div>
+            <div>
+                <input type="checkbox" id="г.Киев"><label for="г.Киев">г.Киев</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Харьковская область"><label for="Харьковская область">Харьковская область</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Черниговская область"><label for="Черниговская область">Черниговская область</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Полтавская область"><label for="Полтавская область">Полтавская область</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Днепропетровская область"><label for="Днепропетровская область">Днепропетровская область</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Киевская область"><label for="Киевская область">Киевская область</label>
+            </div>
+<div>
+            <input type="checkbox" id="Житомирская область"><label for="Житомирская область">Житомирская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Черкасская область"><label for="Черкасская область">Черкасская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Луганская область"><label for="Луганская область">Луганская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Донецкая область"><label for="Донецкая область">Донецкая область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Кировоградская область"><label for="Кировоградская область">Кировоградская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Винницкая область"><label for="Винницкая область">Винницкая область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Черновицкая область"><label for="Черновицкая область">Черновицкая область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Херсонская область"><label for="Днепропетровская область">Херсонская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="АР Крым"><label for="АР Крым">АР Крым</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Одесская область"><label for="Одесская область">Одесская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Николаевская область"><label for="Николаевская область">Николаевская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Хмельницкая область"><label for="Хмельницкая область">Хмельницкая область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Ровненская область"><label for="Ровненская область">Ровненская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Тернопольская область"><label for="Тернопольская область">Тернопольская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Ивано-Франковская область"><label for="Ивано-Франковская область">Ивано-Франковская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Закарпатская область"><label for="Закарпатская область">Закарпатская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Волынская область"><label for="Волынская область">Волынская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Львовская область"><label for="Львовская область">Львовская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="Запорожская область"><label for="Запорожская область">Запорожская область</label>
+        </div>
+        <div>
+            <input type="checkbox" id="По всей территории"><label for="По всей территории">По всей территории</label>
+        </div>
 
     </div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -493,7 +550,7 @@ input[type="text"]:focus {
     <script>
         const map = L.map('map', {
             zoomControl: false
-        }).setView([61.050551362588, 93.4246193441314], 4)
+        }).setView([48.3794, 31.1656], 7);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -535,7 +592,6 @@ var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/a
 const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3']
-        
 });
 
 googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
@@ -565,27 +621,20 @@ var Stadia_OSMBright = L.tileLayer('https://tiles.stadiamaps.com/tiles/osm_brigh
 	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 	ext: 'png'
 });
-
-// Добавляем стандартную карту по умолчанию
-osmLayer.addTo(map);
+// Настройка слоев для переключения
 
 // Настройка слоев для переключения
 const baseLayers = {
     "OSM": osmLayer,
-    "OSM Black": darkLayer,
-    "Satellite": satelliteLayerWithBorders,
     "Google Maps": googleStreets,
-    "Google Hybrid": googleHybrid,
-    "Google Terrain": googleTerrain,
-    "OpenTopoMap": OpenTopoMap,
-    "OPNVKarte": OPNVKarte,
-    "Ersi": Esri_WorldTopoMap,
-    "Stadia White": Stadia_OSMBright,
-    "Stadia Dark": Stadia_AlidadeSmoothDark
 };
+
+googleStreets.addTo(map)
 
 // Добавляем контрол для переключения карт
 L.control.layers(baseLayers).addTo(map);
+
+// Настройка слоев для переключения
 
 // Функция для изменения фильтра на изображении
 function updateOverlayFilter() {
@@ -604,7 +653,7 @@ map.on('layerremove', updateOverlayFilter);
 // Если карта уже загружена, сразу применим фильтр
 updateOverlayFilter();
 
-        let currentObjectId = 45940;
+        let currentObjectId = 1000;
         let deleteMode = false;
         const markers = [];
 
@@ -741,9 +790,10 @@ updateOverlayFilter();
             const objectId = generateId();
             let iconUrl;
             let iconClass = 'red-id';
+             let iconClass1 = ''           
             let shiftedClass = ''
+            let iconSize = ''
             let shiftedClasss = ''
-
             if (speed === 0) {  
     // Если скорость 0, сразу устанавливаем иконку EPVO
     iconUrl = 'EPVO.png'; 
@@ -757,69 +807,162 @@ updateOverlayFilter();
     iconHtml = `
         <div class="icon-container ${iconClass}">
             <img src="${iconUrl}" class="icon" />
-            <div class="info-container ${shiftedClass} ${shiftedClasss}">
-                <span class="label1-container ${iconClass}">${objectId} ${kievTime}</span>
-                <div class="info-container ${shiftedClass} ${shiftedClasss}">
-                <span class="r1-container ${iconClass}">ЕППО</span>
-                <span class="rls1-container ${iconClass}">${objectId1}</span>
+            <div class="info1-container ${shiftedClass} ${shiftedClasss}">
+                <span class="label1-container ${iconClass}">ер</span>
             </div>
-                        </div>
         </div>
     `;
+    // Удаляем маркер через 15 минут (900000 мс)
+setTimeout(() => {
+    marker.remove();
+}, 1200000);
 } else {
     // Условия для выбора иконки в зависимости от скорости
-    if (speed >= 710 && speed <= 711) {
-        iconUrl = 'Tu-95ms.png';
-    } else if (speed >= 930 && speed <= 931) {
+    if (speed >= 120 && speed <= 121) {
+        iconUrl = 'supercam.png';
+    } else if (speed > 120 && speed <= 200) {
+        iconUrl = 'shahed.png';
+    } else if (speed >= 7559 && speed < 7560) {
+        iconUrl = 'iskander.png';
+        shiftedClass = 'shifted-info-container';
+    } else if (speed >= 950 && speed <= 951) {
+        iconUrl = 'kalibr.png';
+        shiftedClass = 'shifted-info-container';
+    } else if (speed >= 1000 && speed <= 1001) {
+        iconUrl = 'x101.png';
+        shiftedClass = 'shifted-info-container';
+    } else if (speed >= 450 && speed <= 451) {
+        iconUrl = 'kab.png';
+    } else if (speed >= 11024 && speed <= 11025) {
+        shiftedClass = 'shifted-info-container';
+        iconUrl = 'Tsirkon.png';
+    } else if (speed >= 14687 && speed <= 14688) {
+        shiftedClass = 'shifted-info-container';
+        iconUrl = 'Kinzhal.png';
+    } else if (speed >= 4899 && speed <= 4900) {
+        shiftedClass = 'shifted-info-container';
+        iconUrl = 'Kh-22.png';
+    } else if (speed >= 1049 && speed <= 1050) {
+        shiftedClass = 'shifted-info-container';
+        iconUrl = 'Kh-59.png';
+    } else if (speed >= 80 && speed <= 85) {
+        iconUrl = 'parodia.png';
+    } else if (speed >= 290 && speed <= 291) {
+        iconUrl = 'Lancet.png';
+    } else if (speed >= 98 && speed <= 99) {
+        iconUrl = 'gerbera.png';
+    } else if (speed >= 100 && speed <= 101) {
+        iconUrl = 'ZZala.png';
+    } else if (speed >= 4500 && speed <= 4501) {
+        iconUrl = 'grumble.png';
+        shiftedClass = 'shifted-info-container';
+    } else if (speed >= 1030 && speed <= 1031) {
+        shiftedClass = 'shifted-info-container';
+        iconUrl = 'kh-69.png';
+    } else if (speed >= 109 && speed <= 110) {
+        iconUrl = 'orlan.png';
+    } else if (speed >= 5400 && speed <= 5401) {
+        iconUrl = 'atacms.png';
+        shiftedClass = 'shifted-info-container';
+        iconClass = 'blue-id'; // Синий ID для ATACMS
+        lineColor = '#006aff';  // Set blue line color for blue objects
+    } else if (speed >= 959 && speed <= 960) {
+        iconUrl = 'storm-shadow.png';
+        shiftedClass = 'shifted-info-container';
+        iconClass = 'blue-id';
+        lineColor = '#006aff';  // Set blue line color for blue objects
+    } else if (speed >= 190 && speed <= 191) {
+        iconUrl = 'lutiy.png';
+        iconClass = 'blue-id';
+        lineColor = '#006aff';  // Set blue line color for blue objects
+    } else if (speed >= 201 && speed <= 202) {
+        iconUrl = 'beaver.png';
+        iconClass = 'blue-id';
+        lineColor = '#006aff';  // Set blue line color for blue objects
+    } else if (speed >= 329 && speed <= 330) {
+        iconUrl = 'rys`.png';
+        iconClass = 'blue-id';
+        lineColor = '#006aff';  // Set blue line color for blue objects
+    } else if (speed >= 74 && speed <= 75) {
+        iconUrl = 'Molnia.png';
+    } else if (speed >= 3000 && speed <= 3001) {
+        iconUrl = 'gmlrs.png';
+        shiftedClass = 'shifted-info-container';
+        iconClass = 'blue-id';
+    } else if (speed >= 900 && speed <= 901) {
+        iconUrl = 'iskander-k.png';
+        shiftedClass = 'shifted-info-container';
+    } else if (speed >= 2519 && speed <= 2520) {
+        iconUrl = 'kh31.png';
+        shiftedClass = 'shifted-info-container';
+    } else if (speed >= 1100 && speed <= 1101) {
+        iconUrl = 'su-24.png';
+    } else if (speed >= 1102 && speed <= 1103) {
+        iconUrl = 'su-24 BLR.png';
+        iconClass = 'blue-id';
+    } else if (speed >= 1002 && speed <= 1003) {
+        iconUrl = 'f-16.png';
+        iconClass = 'blue-id';
+    } else if (speed >= 1200 && speed <= 1201) {
+        iconUrl = 'Su-34.png';
+iconClass = 'red-id su34-icon';
+    } else if (speed >= 1600 && speed <= 1601) {
+        iconUrl = 'Su-57.png';
+        iconClass = 'red-id su34-icon';
+    } else if (speed >= 1204 && speed <= 1205) {
+        iconUrl = 'Su-30.png';
+        iconClass = 'red-id su34-icon';
+    } else if (speed >= 1202 && speed <= 1203) {
+        iconUrl = 'Su-30 BLR.png';
+        iconClass = 'blue-id';  
+    } else if (speed >= 1400 && speed <= 1401) {
+        iconUrl = 'Su-35.png';
+        iconClass = 'red-id su34-icon';
+    } else if (speed >= 2300 && speed <= 2301) {
         iconUrl = 'Tu-22M3.png';
+    } else if (speed >= 952 && speed <= 953) {
+         iconUrl = 'Su25.png';
+         iconClass = 'red-id su34-icon';
+    } else if (speed >= 954 && speed <= 955) {
+        iconUrl = 'Su25 BLR.png';
+        iconClass = 'blue-id';  
+    } else if (speed >= 850 && speed <= 851) {
+        iconUrl = 'mig-29 BLR.png';
+        iconClass = 'blue-id';  
+    } else if (speed >= 961 && speed <= 962) {
+         iconUrl = 'kh-35.png';
+         shiftedClass = 'shifted-info-container';
+    } else if (speed >= 3180 && speed <= 3181) {
+        iconUrl = 'oniks.png';
+        shiftedClass = 'shifted-info-container';
+    } else if (speed >= 500 && speed <= 501) {
+        iconUrl = 'shahed 238.png';
     } else if (speed >= 2400 && speed <= 2450) {
         iconUrl = 'mig-31.png';
     } else if (speed >= 800 && speed <= 801) {
         iconUrl = 'a-50.png';
-    } else if (speed >= 960 && speed <= 961) {
-        iconUrl = 'tu-160.png';
-    } else if (speed >= 760 && speed <= 761) {
-        iconUrl = 'il-76md.png';
-    } else if (speed >= 775 && speed <= 776) {
-        iconUrl = 'il-78.png';
-    } else if (speed >= 750 && speed <= 751) {
-        iconUrl = 'tu-134.png';
-    } else if (speed >= 440 && speed <= 441) {
-        iconUrl = 'an-26.png';
-    } else if (speed >= 570 && speed <= 571) {
-        iconUrl = 'an-12.png';
-    } else if (speed >= 820 && speed <= 821) {
-        iconUrl = 'an-124.png';
-    } else if (speed >= 485 && speed <= 486) {
-        iconUrl = 'il-22.png';
+    } else if (speed >= 1110 && speed <= 1111) {
+        iconUrl = 'mirage.png';
+        iconClass = 'blue-id';  
     } else {
         // Если скорость не попала ни в одно условие, ставим "neyst tip.png"
         iconUrl = 'neyst tip.png';
     }
-const translations = {
-    "Tu-95ms": "Ту-95МС",
-    "a-50": "А-50",    
-    "Tu-22M3": "Ту-22М3",
-    "mig-31": "МиГ-31И",
-    "neyst tip": "Неизвестный тип"
-};
 
-let objectKey = iconUrl.replace('.png', '');
-let objectType = translations[objectKey] || objectKey;
+// Генерируем случайное число от 1 до 30
+let randomNumber = Math.floor(Math.random() * 99) + 1;
 
-iconHtml = `
-    <div class="icon-container ${iconClass}">
-        <img src="${iconUrl}" class="icon" />
-        <div class="info-container ${shiftedClass} ${shiftedClasss}">
-            <span class="label-container ${iconClass}"></span>
-            <span class="r-container ${iconClass}"></span>
-        </div>
-    </div>
-`;
-
+// Выводим число в консоль
+console.log(randomNumber);
+    // Основной шаблон для всех остальных случаев
+    iconHtml = `
+        <div class="icon-container ${iconClass}">
+            <img src="${iconUrl}" class="icon ${iconClass || ''}" />
+             <div class="info-container ${shiftedClass} ${shiftedClasss}">
+                <span class="label-container ${iconClass}">${objectId}<span style="color:transparent;">ПП</span></span>
+                </div>
+    `;
 }
-
-
                     const icon = L.divIcon({
                         className: 'icon',
                         html: iconHtml,
@@ -827,18 +970,45 @@ iconHtml = `
                         iconAnchor: [20, 20],
                     });
 
-                    const marker = L.marker([lat, lng], { icon }).addTo(map);
-                    
-
-// Сопоставление английских названий с русскими
+               const marker = L.marker([lat, lng], { icon }).addTo(map);
 const translations = {
-    "Tu-95ms": "Ту-95МС",
-    "A-50": "А-50",    
+    "supercam": "Supercam",
+    "shahed": "Shahed",
+    "iskander": "Искандер-М",
+    "kalibr": "Калибр",
+    "x101": "Х-101",
+    "kab": "КАБ",
+    "Tsirkon": "Циркон",
+    "Kinzhal": "Кинжал",
+    "Kh-22": "Х-22",
+    "Kh-59": "Х-59",
+    "parodia": "Пародия",
+    "Lancet": "Ланцет",
+    "gerbera": "Гербера",
+    "ZZala": "Зала",
+    "grumble": "ЗУР",
+    "kh-69": "Х-69",
+    "orlan": "Орлан",
+    "atacms": "ATACMS",
+    "storm-shadow": "Storm Shadow",
+    "lutiy": "Лютый",
+    "beaver": "Бобёр",
+    "rys`": "Рысь",
+    "Molnia": "Молния",
+    "gmlrs": "GMLRS",
+    "iskanderk": "Искандер-К",
+    "kh31": "Х-31",
+    "su-24": "Су-24",
+    "f-16": "F-16",
+    "Su-34": "Су-34",
+    "Su-57": "Су-57",
+    "su-30": "Су-30",
+    "Su-30 BLR": "Су-30 (Беларусь)",
+    "Su-35": "Су-35",
     "Tu-22M3": "Ту-22М3",
-    "mig-31": "МиГ-31И",
+    "mirage": "Mirage-2000",
     "neyst tip": "Неизвестный тип"
 };
-
 
 let objectKey = iconUrl.replace('.png', '').replace(/-/g, ' ');
 let objectType = translations[objectKey] || objectKey;
@@ -1080,60 +1250,66 @@ function openCoordsModal(callback) {
     };
 }
 
-marker.on('click', function () {
-    if (deleteMode) {
-        if (confirm('Подтвердите удаление объекта')) {
-            // Удаляем маркер
-            marker.remove();
 
-            // Выходим из режима удаления
-            deleteMode = false;
 
-            const deleteButton = document.getElementById('deleteButton');
-            deleteButton.classList.remove('active-delete-mode'); // снимаем активный класс
-            deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Удалить объект';
+
+                    marker.on('click', function () {
+        if (deleteMode) {
+            if (confirm('Удалить этот объект?')) {
+                // Скрываем маркер, а не удаляем его
+                marker.remove();
+                // или marker.setVisible(false); // Для других библиотек
+
+                deleteMode = false;
+                const deleteButton = document.getElementById('deleteButton');
+            
+                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            }
         }
-    }
-});
+    });
 
                 });
             });
         });
-document.getElementById('deleteButton').onclick = function () {
-    deleteMode = !deleteMode;
 
+       document.getElementById('deleteButton').onclick = function () {
+    deleteMode = !deleteMode;
+    
+    // Изменяем только текст и состояние, оставляем стили без изменений
     if (deleteMode) {
-        this.classList.add('active-delete-mode');
-        this.innerHTML = '<i class="fas fa-check"></i> Выход из режима удаления';
+        this.innerHTML = '<i class="fas fa-check"></i>'; // Изменяем только текст
     } else {
-        this.classList.remove('active-delete-mode');
-        this.innerHTML = '<i class="fas fa-trash-alt"></i> Удалить объект';
+        this.innerHTML = '<i class="fas fa-trash-alt"></i>'; // Изменяем только текст
     }
 };
-
 
         window.addEventListener('beforeunload', (event) => {
             event.preventDefault();
             event.returnValue = '';
         });
-// РЛС для объектов
-const rlsOptions = [
-    "79К6",
-    "35Д6М",
-    "Малахіт",
-    "Малахіт", // Увеличиваем вероятность "Малахіт"
-    "Малахіт"
-];
+        // РЛС для объектов
+        const rlsOptions = [
+    "35М",
+    "18МА",
+    "МЛ",
+    "35",
+    "79"
+]; // Исключаем "Волга" из общего списка
 
 // Функция для выбора РЛС
 function getRlsForObject(objectId, iconUrl) {
-    // Для всех объектов (включая спецобъекты) выбираем случайную РЛС
-    const randomIndex = Math.floor(Math.random() * rlsOptions.length);
-    return rlsOptions[randomIndex];
+    // Уникальные РЛС для Iskander-M, Tsircon, Kinzhal, Atacms
+    const specialRls = ["iskander.png", "Tsirkon.png", "Kinzhal.png", "atacms.png"];
+    let rls = "Волга"; // по умолчанию для специальных объектов
+
+    if (specialRls.includes(iconUrl)) {
+        return rls; // Возвращаем "Волга" только для специальных объектов
+    } else {
+        // Для остальных объектов выбираем случайную РЛС, исключая "Волга"
+        const randomIndex = Math.floor(Math.random() * rlsOptions.length);
+        return rlsOptions[randomIndex];
+    }
 }
-
-let touchTimer;
-
 map.on('contextmenu', function (e) {
     const coords = `${e.latlng.lat}, ${e.latlng.lng}`;
     navigator.clipboard.writeText(coords).then(() => {
@@ -1142,54 +1318,51 @@ map.on('contextmenu', function (e) {
         console.error('Ошибка копирования координат:', err);
     });
 });
-
-map.on('touchstart', function (e) {
-    // Запускаем таймер, чтобы определить долгий клик
-    touchTimer = setTimeout(() => {
-        const latlng = e.latlng;
-        const coords = `${latlng.lat}, ${latlng.lng}`;
-
-        navigator.clipboard.writeText(coords).then(() => {
-            alert(`Координаты скопированы: ${coords}`);
-        }).catch(err => {
-            console.error('Ошибка копирования координат:', err);
-        });
-    }, 800); // Время задержки в миллисекундах (800 мс = долгий клик)
-
-});
-
-map.on('touchend', function (e) {
-    // Если палец поднят до завершения задержки, отменяем таймер
-    clearTimeout(touchTimer);
-});
-
-fetch("front.json")
+fetch("granica.json")
   .then(response => response.json())
   .then(data => {
+    // Первый слой — жёлтая обводка (только для "Граница")
+    L.geoJSON(data, {
+      filter: feature => feature.properties.name === 'Граница',
+      style: {
+        color: '#ffdd8f',
+        weight: 10,
+        opacity: 0.7,
+        fillOpacity: 0.0
+      }
+    }).addTo(map);
+
+    // Второй слой — все остальные стили, включая "Граница"
     L.geoJSON(data, {
       style: function(feature) {
-        let color = '#bdbdbd'; // По умолчанию цвет "неизвестно"
-        let opacity = 1; // По умолчанию непрозрачность для "неизвестно"
-        let fillOpacity = 1; // По умолчанию заливка непрозрачная
+        let color = '#bdbdbd'; // По умолчанию
+        let opacity = 1;
+        let fillOpacity = 1;
+        let dashArray = '';  // Без пунктиров по умолчанию
 
-        if (feature.properties.name === 'Багатокутник 4') {
-          color = '#000000'
-          opacity = 1; // Прозрачность границы
-          fillOpacity = 0.0; // Прозрачность заливки
+        if (feature.properties.name === 'Граница') {
+          color = '#000000';
+          opacity = 0.7;
+          fillOpacity = 0.0;
+          dashArray = '5, 5';  // Это создаёт пунктирную линию
+        } else if (feature.properties.name === 'Линия Фроінта') {
+          color = '#B22222';
+          opacity = 0.7;
+          fillOpacity = 0.0;
         }
 
-        // Возвращаем стиль с прозрачностью
         return {
           color: color,
           weight: 2,
           opacity: opacity,
           fillColor: color,
-          fillOpacity: fillOpacity
+          fillOpacity: fillOpacity,
+          dashArray: dashArray  // Применяем пунктир для "Границы"
         };
       }
     }).addTo(map);
-  })
-  .catch(error => console.error("Ошибка загрузки JSON:", error));
+  });
+
 
   let polygons = {};
 let menuVisible = false;
@@ -1204,14 +1377,14 @@ fetch('trevoga.json')
         });
 
         // Автоматически активируем "Луганская область" и "А. Р Крым"
-        const autoActivateRegions = ["Луганская область", "А.Р Крым"];
+        const autoActivateRegions = ["Луганская область", "АР Крым"];
         
         document.querySelectorAll('#alert-menu input[type=checkbox]').forEach(checkbox => {
             checkbox.onchange = function() {
                 let region = checkbox.id;
                 if (checkbox.checked && regions[region]) {
                     let layer = L.geoJSON(regions[region], {
-                        style: { color: 'red', fillColor: 'red', fillOpacity: 0.1, weight: 0.6 }
+                        style: { color: 'red', fillColor: 'red', fillOpacity: 0.3, weight: 0.0 }
                     }).addTo(map);
                     polygons[region] = layer;
                 } else if (polygons[region]) {
@@ -1226,12 +1399,25 @@ fetch('trevoga.json')
                 checkbox.onchange();  // Вызываем onchange вручную для активированного региона
             }
         });
+
+        // Обработчик для чекбокса "По всей территории"
+        document.getElementById('По всей территории').onchange = function() {
+            let isChecked = this.checked;
+            document.querySelectorAll('#alert-menu input[type=checkbox]').forEach(checkbox => {
+                if (checkbox.id !== 'По всей территории') {
+                    checkbox.checked = isChecked;
+                    checkbox.onchange();  // Активируем или деактивируем регионы в зависимости от состояния
+                }
+            });
+        };
     });
 
 document.getElementById('alert-button').onclick = function() {
     menuVisible = !menuVisible;
     document.getElementById('alert-menu').style.display = menuVisible ? 'block' : 'none';
 };
+
+const iconElement = document.querySelector('.icon-container .icon');
         function getKievTime() {
     const options = {
         timeZone: 'Europe/Kiev',
@@ -1258,8 +1444,456 @@ function getNextObjectId() {
         </div>
     `;
     return iconHTML;
+    };
+  // Иконка Сумы
+  var sumyIcon = L.icon({
+    iconUrl: 'sumy.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Киев
+  var kyivIcon = L.icon({
+    iconUrl: 'kyiv.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Ивано-Франковск
+  var ifrankivskIcon = L.icon({
+    iconUrl: 'ifrankivsk.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Львов
+  var lvivIcon = L.icon({
+    iconUrl: 'lviv.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Херсон
+  var khersonIcon = L.icon({
+    iconUrl: 'kherson.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Хмельницкий
+  var khmelnitskyIcon = L.icon({
+    iconUrl: 'khmelnitsky.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Житомир
+  var zhytomyrIcon = L.icon({
+    iconUrl: 'zhytomyr.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Черкассы
+  var cherkasyIcon = L.icon({
+    iconUrl: 'cherkasy.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Чернигов
+  var chernihivIcon = L.icon({
+    iconUrl: 'chernihiv.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Харьков
+  var kharkivIcon = L.icon({
+    iconUrl: 'kharkiv.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Одесса (поменяна на odesa.png)
+  var odesaIcon = L.icon({
+    iconUrl: 'odesa.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Донецк
+  var donetskIcon = L.icon({
+    iconUrl: 'donetsk.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Луганск
+  var luhanskIcon = L.icon({
+    iconUrl: 'luhansk.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Николаев
+  var nikolaevIcon = L.icon({
+    iconUrl: 'mykolaiv.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Днепр
+  var dnieperIcon = L.icon({
+    iconUrl: 'dnipro.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Полтава
+  var poltavaIcon = L.icon({
+    iconUrl: 'poltava.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Луцк
+  var lutskIcon = L.icon({
+    iconUrl: 'lutsk.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Ровно (поменяна на rivne.png)
+  var rivneIcon = L.icon({
+    iconUrl: 'rivne.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Иконка Тернополь (поменяна размер на 100x27)
+  var ternopilIcon = L.icon({
+    iconUrl: 'ternopil.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var vinytsaIcon = L.icon({
+    iconUrl: 'vinytsa.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var kurskIcon = L.icon({
+    iconUrl: 'kursk.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var kropIcon = L.icon({
+    iconUrl: 'kropivnitsky.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var uzhorodIcon = L.icon({
+    iconUrl: 'uzhorod.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+  
+  var zaporizhzhyaIcon = L.icon({
+    iconUrl: 'zaporizhzhya.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var voronezhIcon = L.icon({
+    iconUrl: 'voronezh.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var chernivtsyIcon = L.icon({
+    iconUrl: 'chernivtsy.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var sevastopolIcon = L.icon({
+    iconUrl: 'sevastopol.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var simferopolIcon = L.icon({
+    iconUrl: 'simferopol.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var rostovIcon = L.icon({
+    iconUrl: 'rostov.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var belgorodIcon = L.icon({
+    iconUrl: 'belgorod.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var orelIcon = L.icon({
+    iconUrl: 'orel.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+
+  var krasnodarIcon = L.icon({
+    iconUrl: 'krasnodar.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var kishinevIcon = L.icon({
+    iconUrl: 'kishinev.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var tiraspolIcon = L.icon({
+    iconUrl: 'tiraspol.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var bryanskIcon = L.icon({
+    iconUrl: 'bryansk.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var gomelIcon = L.icon({
+    iconUrl: 'gomel.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var brestIcon = L.icon({
+    iconUrl: 'brest.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var tambovIcon = L.icon({
+    iconUrl: 'tambov.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var lipetskIcon = L.icon({
+    iconUrl: 'lipetsk.png',
+    iconSize: [54, 17],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var volgogradIcon = L.icon({
+    iconUrl: 'volgograd.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  var stavropolIcon = L.icon({
+    iconUrl: 'stavropol.png',
+    iconSize: [100, 27],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8]
+  });
+
+  // Маркеры
+  L.marker([50.9077, 34.7981], {icon: sumyIcon}).addTo(map)
+    .bindPopup('Сумы');
+
+  L.marker([50.4501, 30.5234], {icon: kyivIcon}).addTo(map)
+    .bindPopup('Киев');
+
+  L.marker([48.9226, 24.7111], {icon: ifrankivskIcon}).addTo(map)
+    .bindPopup('Ивано-Франковск');
+
+  L.marker([49.8397, 24.0297], {icon: lvivIcon}).addTo(map)
+    .bindPopup('Львов');
+
+  L.marker([46.6354, 32.6168], {icon: khersonIcon}).addTo(map)
+    .bindPopup('Херсон');
+
+  L.marker([49.4194, 26.9871], {icon: khmelnitskyIcon}).addTo(map)
+    .bindPopup('Хмельницкий');
+
+  L.marker([50.2558, 28.6647], {icon: zhytomyrIcon}).addTo(map)
+    .bindPopup('Житомир');
+
+  L.marker([49.4444, 32.0591], {icon: cherkasyIcon}).addTo(map)
+    .bindPopup('Черкассы');
+
+  L.marker([51.4845, 31.2752], {icon: chernihivIcon}).addTo(map)
+    .bindPopup('Чернигов');
+
+  L.marker([49.9997, 36.3055], {icon: kharkivIcon}).addTo(map)
+    .bindPopup('Харьков');
+
+  L.marker([46.466028051982505, 30.73194464183904], {icon: odesaIcon}).addTo(map) // Одесса - новая иконка
+    .bindPopup('Одесса');
+
+  L.marker([48.0159, 37.8028], {icon: donetskIcon}).addTo(map)
+    .bindPopup('Донецк');
+
+  L.marker([48.5734, 39.2917], {icon: luhanskIcon}).addTo(map) // Луганск
+    .bindPopup('Луганск');
+
+  L.marker([46.96606377078415, 32.00714190111791], {icon: nikolaevIcon}).addTo(map) // Николаев
+    .bindPopup('Николаев');
+
+  L.marker([48.4647, 35.0462], {icon: dnieperIcon}).addTo(map) // Днепр
+    .bindPopup('Днепр');
+
+  L.marker([49.5883, 34.5516], {icon: poltavaIcon}).addTo(map) // Полтава
+    .bindPopup('Полтава');
+
+  L.marker([50.7384, 25.3496], {icon: lutskIcon}).addTo(map) // Луцк
+    .bindPopup('Луцк');
+
+  L.marker([50.6174, 26.2505], {icon: rivneIcon}).addTo(map) // Ровно
+    .bindPopup('Ровно');
+
+  L.marker([49.5535, 25.5944], {icon: ternopilIcon}).addTo(map) // Тернополь
+    .bindPopup('Тернополь');
+
+  L.marker([49.230076505396205, 28.466140385007137], {icon: vinytsaIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Винница');
+
+    L.marker([51.74054846059095, 36.202022431404735], {icon: kurskIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Курск');
+    
+    L.marker([48.505884379238395, 32.25939701824791], {icon: kropIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Кропивницкий');   
+    
+    L.marker([47.83806363302623, 35.138117335493426], {icon: zaporizhzhyaIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Запорожье');
+
+    L.marker([48.617860172673396, 22.287111731790745], {icon: uzhorodIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Ужгород');
+
+    L.marker([51.664770210236625, 39.192003637554144], {icon: voronezhIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Воронеж');
+    
+    L.marker([48.289416014336034, 25.93849702601369], {icon: chernivtsyIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Черновцы');
+
+    L.marker([44.606932664165086, 33.52121147182199], {icon: sevastopolIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Севастополь');
+
+    L.marker([44.944693129246815, 34.095374166785824], {icon: simferopolIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Симферополь');
+
+    L.marker([47.23695642994803, 39.70560535866672], {icon: rostovIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Ростов-На-Дону');
+    
+    L.marker([50.593362209571985, 36.60262218379635], {icon: belgorodIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Белгород');
+
+    L.marker([52.96806326717185, 36.05768708492768], {icon: orelIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Орел');
+
+    L.marker([45.03422412918758, 38.97433481150454], {icon: krasnodarIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Краснодар');
+
+    L.marker([47.00443988352829, 28.86221026505548], {icon: kishinevIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Кишинев');
+
+    L.marker([46.848418668720264, 29.596272952267398], {icon: tiraspolIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Тирасполь');
+
+    L.marker([53.26313369889039, 34.41449235432519], {icon: bryanskIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Брянск');
+    
+    L.marker([52.427529150174315, 30.992362579646386], {icon: gomelIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Гомель');
+
+    L.marker([52.098693394195976, 23.763378922343506], {icon: brestIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Брест');
+
+    L.marker([52.73283272787129, 41.43950655006939], {icon: tambovIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Тамбов');
+
+    L.marker([52.61046379351352, 39.60105501243989], {icon: lipetskIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Липецк');
+
+    L.marker([48.70827924051519, 44.50919990164602], {icon: volgogradIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Волгоград');
+
+    L.marker([45.037336252262534, 41.9645886199773], {icon: stavropolIcon}).addTo(map) // Винница (новые координаты)
+    .bindPopup('Ставрополь');
+      // Загрузка GeoJSON (замени на свой путь к JSON)
+  fetch('ukraine.json') // или 'regions.json', если у тебя так называется
+    .then(res => res.json())
+    .then(data => {
+      // Добавление GeoJSON с нужным стилем
+      L.geoJSON(data, {
+style: function(feature) {
+  return {
+    color: 'black',
+    weight: 0.3,
+    dashArray: '4',
+    fillOpacity: 0
+  };
 }
 
-    </script>
+      }).addTo(map);
+    });
+</script>
+</script>
+</script>
 </body>
 </html>
