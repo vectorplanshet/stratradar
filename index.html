@@ -839,6 +839,7 @@ const translations = {
     "neyst tip": "Неизвестный тип"
 };
 
+
 let objectKey = iconUrl.replace('.png', '').replace(/-/g, ' ');
 let objectType = translations[objectKey] || objectKey;
 objectType = objectType.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -854,8 +855,8 @@ let lastTimestamp = null;
 
 const customPopupContent = `
     <div class="custom-popup">
-        <p><strong>ЦЕЛЬ (2111):</strong> ${objectType}</p>
-        <p><strong>СКОРОСТЬ (2818):</strong> ${speed} КМ/Ч</p>
+        <p><strong>ЦЕЛЬ:</strong> ${objectType}</p>
+        <p><strong>СКОРОСТЬ:</strong> ${speed} км/ч</p>
         <button id="changeCoordsBtn">Изменить координаты</button>
     </div>
 `;
@@ -892,7 +893,7 @@ marker.on('popupopen', () => {
 
                     if (!isActive) {
                         isActive = true;
-                        requestAnimationFrame(updatePosition);
+                        scheduleNextFrame(updatePosition);
                     }
                 }
             });
@@ -914,13 +915,24 @@ function rotateIcon(lat1, lng1, lat2, lng2, speed) {
 
 markers.push(marker);
 
+// ==== Стабильное обновление позиций ====
+function scheduleNextFrame(callback) {
+    if (document.hasFocus()) {
+        requestAnimationFrame(callback);
+    } else {
+        setTimeout(() => callback(performance.now()), 1000); // обновление раз в секунду в фоне
+    }
+}
+
 function updatePosition(timestamp) {
     if (!lastTimestamp) lastTimestamp = timestamp;
-    const deltaTime = (timestamp - lastTimestamp) / 1000;
+    const deltaTime = (timestamp - lastTimestamp) / 1000; // секунды реального времени
     lastTimestamp = timestamp;
 
+    const speedMps = speed * 1000 / 3600; // км/ч → м/с
+
     const [newLat, newLng] = calculateNewPosition(
-        currentLat, currentLng, speed, deltaTime, targetLatVar, targetLngVar
+        currentLat, currentLng, speedMps, deltaTime, targetLatVar, targetLngVar
     );
 
     const distance = haversine(currentLat, currentLng, targetLatVar, targetLngVar);
@@ -937,14 +949,14 @@ function updatePosition(timestamp) {
 
     marker.setLatLng([currentLat, currentLng]);
 
-    if (distance > 0.00001 && isActive) { 
-        requestAnimationFrame(updatePosition);
+    if (distance > 0.00001 && isActive) {
+        scheduleNextFrame(updatePosition);
     } else {
         currentWaypointIndex++;
         if (currentWaypointIndex < waypoints.length) {
             targetLatVar = waypoints[currentWaypointIndex][0];
             targetLngVar = waypoints[currentWaypointIndex][1];
-            requestAnimationFrame(updatePosition);
+            scheduleNextFrame(updatePosition);
         } else {
             isActive = false;
             marker.remove();
@@ -955,10 +967,45 @@ function updatePosition(timestamp) {
 waypoints.push([targetLat, targetLng]);
 currentWaypointIndex = 0;
 lastTimestamp = null;
-requestAnimationFrame(updatePosition);
+scheduleNextFrame(updatePosition);
 
-// ==== Модальное окно для "Изменить координаты" (сверху слева) ====
+// ==== Вспомогательные функции ====
 
+function haversine(lat1, lon1, lat2, lon2) {
+    const R = 6371000; // радиус Земли в метрах
+    const toRad = x => x * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat/2) ** 2 +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon/2) ** 2;
+    return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function calculateCourse(lat1, lon1, lat2, lon2) {
+    const toRad = x => x * Math.PI / 180;
+    const y = Math.sin(toRad(lon2 - lon1)) * Math.cos(toRad(lat2));
+    const x = Math.cos(toRad(lat1)) * Math.sin(toRad(lat2)) -
+              Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.cos(toRad(lon2 - lon1));
+    return Math.atan2(y, x);
+}
+
+function calculateNewPosition(lat1, lon1, speedMps, deltaTime, lat2, lon2) {
+    const distanceToTravel = speedMps * deltaTime;
+    const distanceTotal = haversine(lat1, lon1, lat2, lon2);
+
+    if (distanceToTravel >= distanceTotal) return [lat2, lon2];
+
+    const fraction = distanceToTravel / distanceTotal;
+
+    return [
+        lat1 + (lat2 - lat1) * fraction,
+        lon1 + (lon2 - lon1) * fraction
+    ];
+}
+
+// ==== Модальное окно ====
 function openCoordsModal(callback) {
     const background = document.createElement('div');
     background.className = 'modal-background show';
@@ -974,12 +1021,10 @@ function openCoordsModal(callback) {
     `;
     document.body.appendChild(box);
 
-    // Расположение сверху слева
     box.style.top = '20px';
     box.style.left = '20px';
     box.style.transform = 'none';
 
-    // Drag
     let isDragging = false;
     let offsetX, offsetY;
     box.onmousedown = (e) => {
@@ -1002,11 +1047,7 @@ function openCoordsModal(callback) {
 
     const textarea = box.querySelector('#coordsInput');
     let tempWaypoints = [marker.getLatLng()];
-    let routeLine = L.polyline(tempWaypoints, {
-        color: '#dd0347',
-        weight: 3,
-        opacity: 1
-    }).addTo(map);
+    let routeLine = L.polyline(tempWaypoints, { color: '#dd0347', weight: 1, opacity: 1 }).addTo(map);
 
     const addCoord = (e) => {
         if (e.originalEvent.button !== 1) return;
@@ -1024,24 +1065,7 @@ function openCoordsModal(callback) {
         map.removeLayer(routeLine);
 
         const coordsText = textarea.value.trim();
-        const coordsList = coordsText.split("\n").map(line => {
-            const [lat, lng] = line.split(",").map(Number);
-            return [lat, lng];
-        }).filter(c => !isNaN(c[0]) && !isNaN(c[1]));
-
-        if (coordsList.length > 0) {
-            const currentPos = marker.getLatLng();
-            currentLat = currentPos.lat;
-            currentLng = currentPos.lng;
-
-            waypoints = [[currentLat, currentLng], ...coordsList];
-            currentWaypointIndex = 1;
-            targetLatVar = waypoints[1][0];
-            targetLngVar = waypoints[1][1];
-            lastTimestamp = null;
-
-            if (!isActive) requestAnimationFrame(updatePosition);
-        }
+        callback(coordsText);
 
         document.body.removeChild(box);
         document.body.removeChild(background);
